@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css"
+    />
+    
+    <style>
+      .container {
+        height: 100vh;
+        width: 100%;
+        max-width: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      input,
+      button {
+        width: 100%;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <input id="email" type="email" placeholder="example@gmail.com" required />
+      <button type="button" onclick="handleLogin()">Login</button>
+    </div>
+
+    <script>
+      // handleLogin
+      const handleLogin = () => {
+        const email = document.getElementById("email").value;
+        if (email) {
+          localStorage.setItem("user", email)
+          alert(`Logged in`);
+          window.location.href = "/";
+        } else {
+          alert("Please enter a valid email address.");
+        }
+      };
+    </script>
+  </body>
+</html>

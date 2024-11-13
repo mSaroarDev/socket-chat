@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css"
+    />
+
+    <!-- styles -->
+    <style>
+      body {
+        padding: 20px;
+      }
+      .container {
+        height: 90vh;
+        width: 100%;
+        max-width: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .msg-container {
+        display: flex;
+        flex: 1 1 0%;
+        width: 100%;
+      }
+
+      .msg-sender {
+        display: flex !important;
+        align-items: center;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .msg-friend {
+        background: black;
+        color: white;
+        padding: 2px 12px;
+        border-radius: 8px;
+      }
+
+      .msg-me {
+        width: fit-content;
+        background: bisque;
+        color: black;
+        padding: 2px 12px;
+        border-radius: 8px;
+        display: flex;
+        margin-left: auto; /* Aligns the message to the right */
+      }
+
+      ul {
+        padding: 0;
+        width: 100%;
+      }
+
+      ul li {
+        list-style: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="msg-container">
+        <ul id="ul">
+          <!-- <li id="li">
+            <span id="span" class="msg-friend">Hi</span>
+          </li>
+          <li>
+            <span class="msg-me">Hello</span>
+          </li>
+          <li>
+            <span class="msg-friend">How are you</span>
+          </li> -->
+        </ul>
+      </div>
+      <div class="msg-sender">
+        <input id="msg-input" />
+        <button id="send-button" onclick="handleSend()">Send</button>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      const socket = io();
+
+      const sendButton = document.getElementById("send-button");
+      let msg = document.getElementById("msg-input");
+      let ul = document.getElementById("ul");
+      let li = document.getElementById("li");
+      let span = document.getElementById("span");
+
+      const handleSend = () => {
+        socket.emit("msg", {
+          msg: msg.value,
+          sender: localStorage.getItem("user"),
+        });
+
+        msg.value = ""
+      };
+
+      // update msg list
+      socket.on("msg-update", (data) => {
+
+        const listItem = document.createElement("li");
+        const spanItem = document.createElement("span");
+        const thisUser = localStorage.getItem("user");
+        if (thisUser === data?.sender) {
+          spanItem.classList.add("msg-me");
+        } else {
+          spanItem.classList.add("msg-friend");
+        }
+        spanItem.textContent = data?.msg;
+
+        // Append the span to the list item and then the list item to the ul
+        listItem.appendChild(spanItem);
+        document.getElementById("ul").appendChild(listItem);
+      });
+    </script>
+  </body>
+</html>
